@@ -7,5 +7,8 @@
             "email": "stephanie@pagofacil.cl"
         }
     ],
-    "require": {}
+    "require": {},
+    "autoload": {
+        "psr-4": {"PagoFacil\\lib\\classes\\": ""}
+    }
 }

@@ -1,11 +1,12 @@
 <?php
+namespace PagoFacil\lib\classes;
 
 class Operacion{
   // Variables comunes
   public $account_id; //String
   public $amount; //Number
   public $currency; //String
-  public $reference; //String
+  public $reference; //String 
   public $signature; //String
 }
 
