@@ -11,5 +11,6 @@
     "autoload": {
         "psr-4": {"PagoFacil\\lib\\": "classes"}
     },
-    "minimum-stability": "dev"
+    "minimum-stability": "dev",
+    "version": "0.1"
 }
