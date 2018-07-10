@@ -1,5 +1,5 @@
 <?php
-namespace PagoFacil\lib\classes;
+namespace PagoFacil\lib;
 
 /*
 * Clase que contiene las funciones para generar un anueva transaccion
