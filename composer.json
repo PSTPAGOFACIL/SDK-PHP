@@ -9,7 +9,7 @@
     ],
     "require": {},
     "autoload": {
-        "psr-4": {"PagoFacil\\lib\\classes\\": ""}
+        "psr-4": {"PagoFacil\\lib\\": ""}
     },
     "minimum-stability": "dev"
 }
