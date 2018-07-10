@@ -1,6 +1,7 @@
 {
     "name": "pagofacil/php-sdk",
     "type": "library",
+    "license": "MIT",
     "authors": [
         {
             "name": "Stephanie Piñero",
