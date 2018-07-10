@@ -18,8 +18,7 @@ class Transaction{
     'PENDIENTE'
   );
   private $urls = array(
-    // 'DESARROLLO' => 'https://gw-dev.pagofacil.cl/initTransaction',
-    'DESARROLLO' => 'https://pagofacil.ngrok.io/initTransaction', //Local Cristian
+    'DESARROLLO' => 'https://gw-dev.pagofacil.cl/initTransaction',
     'BETA'       => 'https://gw-beta.pagofacil.cl/initTransaction',
     'PRODUCCION' => 'https://gw.pagofacil.cl/initTransaction'
   );
