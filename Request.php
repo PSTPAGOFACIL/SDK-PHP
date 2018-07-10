@@ -1,6 +1,6 @@
 <?php
 namespace PagoFacil\lib;
-use  PagoFacil\lib\classes\Operacion;
+use  PagoFacil\lib\Operacion;
 
 class Request extends Operacion{
   // Variables request
