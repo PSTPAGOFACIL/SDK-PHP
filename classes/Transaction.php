@@ -92,19 +92,16 @@ class Transaction{
 
     // Dispara formulario POST
     $html = '';
-
-    $html .= '<html>';
-    $html .= '  <head>  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script></head>';
+    $html .= '<!doctype html>';
+    $html .= '<html lang="es">';
     $html .= '  <body>';
-    $html .= '    <form name="requestForm" id="requestForm" action='.$this->urls[$this->environment].' method="POST">';
+    $html .= '    <form id="requestForm" action='.$this->urls[$this->environment].' method="POST">';
     foreach ($request as $key => $value) {
       $html .= '    <input type="hidden" name="' . $key . '" value="' . $value . '" />';
     }
     $html .= '    </form>';
-    $html .= '    <script type="text/javascript">';
-    $html .= '      $(document).ready(function () {';
-    $html .= '        $("#requestForm").submit(); ';
-    $html .= '      });';
+    $html .= '    <script>';
+    $html .= '      document.getElementById("requestForm").submit();';
     $html .= '    </script>';
     $html .= '  </body>';
     $html .= '</html>';
