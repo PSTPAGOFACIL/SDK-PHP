@@ -8,7 +8,32 @@ use PagoFacil\lib\Transaction;
 class TransactionTest extends TestCase
 {
     /** @test */
-    public function it_generate_the_right_signature_from_a_given_request()
+    public function it_generate_a_valid_signature()
+    {
+        $request = [
+            'x_account_id' => 'a6d26a46b42ee1955ffca9e0d2af1c00cb4a379fa8e1caa2fd900941f72430ea',
+            'x_amount' => '5000.00',
+            'x_currency' => 'CLP',
+            'x_gateway_reference' => '9838',
+            'x_reference' => 'Y13lbj8YnG4GgdQ0REmd',
+            'x_result' => 'completed',
+            'x_test' => 'true',
+            'x_timestamp' => '2019-08-27T15:24:11.092Z',
+            'x_message' => 'X',
+        ];
+
+        $transaction = new Transaction();
+        $transaction->setToken('483fd31ad78d7065e6d506033ca0499a01fbe85653e5c98e9cc4a66234835317');
+        $transaction->generarFirma($request);
+
+        $this->assertEquals(
+            $request['x_signature'],
+            '01133b4555d39daddff0c8fc73fdbd6bef154ee384004b42a95aec9ff493d7e0'
+        );
+    }
+
+    /** @test */
+    public function it_validated_the_signature_from_a_given_request()
     {
         $callbackRequest = [
             'x_account_id' => 'a6d26a46b42ee1955ffca9e0d2af1c00cb4a379fa8e1caa2fd900941f72430ea',
@@ -28,6 +53,28 @@ class TransactionTest extends TestCase
         $transaction->setToken($token);
 
         $this->assertTrue($transaction->validate($callbackRequest));
+    }
+
+    /** @test */
+    public function it_may_not_validate_a_signature_if_a_wrong_token_was_given()
+    {
+        $callbackRequest = [
+            'x_account_id' => 'a6d26a46b42ee1955ffca9e0d2af1c00cb4a379fa8e1caa2fd900941f72430ea',
+            'x_amount' => '5000.00',
+            'x_currency' => 'CLP',
+            'x_gateway_reference' => '9838',
+            'x_reference' => 'Y13lbj8YnG4GgdQ0REmd',
+            'x_result' => 'completed',
+            'x_test' => 'true',
+            'x_timestamp' => '2019-08-27T15:24:11.092Z',
+            'x_message' => 'X',
+            'x_signature' => '01133b4555d39daddff0c8fc73fdbd6bef154ee384004b42a95aec9ff493d7e0'
+        ];
+
+        $transaction = new Transaction();
+        $transaction->setToken('notavalidtoken');
+
+        $this->assertFalse($transaction->validate($callbackRequest));
     }
 
     /** @test */
@@ -54,7 +101,7 @@ class TransactionTest extends TestCase
     }
 
     /** @test */
-    public function it_may_not_validate_an_empty_signature()
+    public function it_may_not_validated_if_the_signature_was_not_included_on_the_request()
     {
         $transaction = new Transaction();
 
