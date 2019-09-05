@@ -61,7 +61,7 @@ class Request implements Requestable
             'x_url_callback' => $this->url_callback,
             'x_shop_country' => $this->shop_country,
             'x_session_id' => $this->session_id,
-            'x_ammount' => $this->ammount,
+            'x_amount' => $this->ammount,
             'x_currency' => $this->currency,
             'x_reference' => $this->reference,
             'x_signature' => $this->signature,
