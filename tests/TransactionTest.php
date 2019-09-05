@@ -8,8 +8,10 @@ use PagoFacil\lib\Transaction;
 class TransactionTest extends TestCase
 {
     /** @test */
-    public function it_generate_a_valid_signature()
+    public function it_generate_the_right_signature()
     {
+        $token = '483fd31ad78d7065e6d506033ca0499a01fbe85653e5c98e9cc4a66234835317';
+
         $request = [
             'x_account_id' => 'a6d26a46b42ee1955ffca9e0d2af1c00cb4a379fa8e1caa2fd900941f72430ea',
             'x_amount' => '5000.00',
@@ -20,45 +22,21 @@ class TransactionTest extends TestCase
             'x_test' => 'true',
             'x_timestamp' => '2019-08-27T15:24:11.092Z',
             'x_message' => 'X',
+            'x_signature' => 'b1122dbdd6d22dfbdd44986930e1408e5980c837640cad013d8a1cdc216ae268'
         ];
 
-        $transaction = new Transaction();
-        $transaction->setToken('483fd31ad78d7065e6d506033ca0499a01fbe85653e5c98e9cc4a66234835317');
-        $transaction->generarFirma($request);
-
         $this->assertEquals(
-            $request['x_signature'],
-            '01133b4555d39daddff0c8fc73fdbd6bef154ee384004b42a95aec9ff493d7e0'
+            'b1122dbdd6d22dfbdd44986930e1408e5980c837640cad013d8a1cdc216ae268',
+            Transaction::generateSignature($request, $token)
         );
     }
 
     /** @test */
-    public function it_validated_the_signature_from_a_given_request()
+    public function it_validate_the_right_signature()
     {
-        $callbackRequest = [
-            'x_account_id' => 'a6d26a46b42ee1955ffca9e0d2af1c00cb4a379fa8e1caa2fd900941f72430ea',
-            'x_amount' => '5000.00',
-            'x_currency' => 'CLP',
-            'x_gateway_reference' => '9838',
-            'x_reference' => 'Y13lbj8YnG4GgdQ0REmd',
-            'x_result' => 'completed',
-            'x_test' => 'true',
-            'x_timestamp' => '2019-08-27T15:24:11.092Z',
-            'x_message' => 'X',
-            'x_signature' => '01133b4555d39daddff0c8fc73fdbd6bef154ee384004b42a95aec9ff493d7e0'
-        ];
-
         $token = '483fd31ad78d7065e6d506033ca0499a01fbe85653e5c98e9cc4a66234835317';
-        $transaction = new Transaction();
-        $transaction->setToken($token);
 
-        $this->assertTrue($transaction->validate($callbackRequest));
-    }
-
-    /** @test */
-    public function it_may_not_validate_a_signature_if_a_wrong_token_was_given()
-    {
-        $callbackRequest = [
+        $request = [
             'x_account_id' => 'a6d26a46b42ee1955ffca9e0d2af1c00cb4a379fa8e1caa2fd900941f72430ea',
             'x_amount' => '5000.00',
             'x_currency' => 'CLP',
@@ -68,77 +46,133 @@ class TransactionTest extends TestCase
             'x_test' => 'true',
             'x_timestamp' => '2019-08-27T15:24:11.092Z',
             'x_message' => 'X',
-            'x_signature' => '01133b4555d39daddff0c8fc73fdbd6bef154ee384004b42a95aec9ff493d7e0'
+            'x_signature' => 'b1122dbdd6d22dfbdd44986930e1408e5980c837640cad013d8a1cdc216ae268'
         ];
 
-        $transaction = new Transaction();
-        $transaction->setToken('notavalidtoken');
-
-        $this->assertFalse($transaction->validate($callbackRequest));
+        $this->assertTrue(
+            Transaction::validate($request, $token)
+        );
     }
 
     /** @test */
-    public function it_may_not_validate_a_wrong_signature()
+    public function it_may_not_validate_the_right_signature()
     {
-        $callbackRequest = [
-            'x_account_id' => 'a6d26a46b42ee1955ffca9e0d2af1c00cb4a379fa8e1caa2fd900941f72430ea',
-            'x_amount' => '5000.00',
-            'x_currency' => 'CLP',
-            'x_gateway_reference' => '9838',
-            'x_reference' => 'Y13lbj8YnG4GgdQ0REmd',
-            'x_result' => 'completed',
-            'x_test' => 'true',
-            'x_timestamp' => '2019-08-27T15:24:11.092Z',
-            'x_message' => 'X',
-            'x_signature' => 'a not valid signature'
-        ];
-
         $token = '483fd31ad78d7065e6d506033ca0499a01fbe85653e5c98e9cc4a66234835317';
-        $transaction = new Transaction();
-        $transaction->setToken($token);
 
-        $this->assertFalse($transaction->validate($callbackRequest));
+        $request = [
+            'x_account_id' => 'a6d26a46b42ee1955ffca9e0d2af1c00cb4a379fa8e1caa2fd900941f72430ea',
+            'x_amount' => '5000.00',
+            'x_currency' => 'CLP',
+            'x_gateway_reference' => '9838',
+            'x_reference' => 'Y13lbj8YnG4GgdQ0REmd',
+            'x_result' => 'completed',
+            'x_test' => 'true',
+            'x_timestamp' => '2019-08-27T15:24:11.092Z',
+            'x_message' => 'X',
+            'x_signature' => 'notavalidsignature'
+        ];
+
+        $this->assertFalse(
+            Transaction::validate($request, $token)
+        );
     }
 
     /** @test */
-    public function it_may_not_validated_if_the_signature_was_not_included_on_the_request()
+    public function it_get_the_right_enviroment()
     {
-        $transaction = new Transaction();
+        $token = '483fd31ad78d7065e6d506033ca0499a01fbe85653e5c98e9cc4a66234835317';
 
-        $this->assertFalse($transaction->validate([]));
+        $request = new Request(
+            '98f13708210194c475687be6106a3b84',
+            2000,
+            'http://doe.com/callback',
+            'http://doe.com/complete',
+            'http://doe.com/cancel',
+            'avalidsessionid',
+            'FAKEORDER1',
+            'jhon@doe.com'
+        );
+
+        $transaction = new Transaction($request, $token);
+
+        $this->assertEquals(
+            'https://gw-dev.pagofacil.cl/initTransaction',
+            $transaction->getEnviroment()
+        );
     }
 
     /** @test */
-    public function it_generate_the_right_form()
+    public function it_set_the_right_production_enviroment()
     {
-        $token = 'd3d9446802a44259755d38e6d163e820';
+        $token = '483fd31ad78d7065e6d506033ca0499a01fbe85653e5c98e9cc4a66234835317';
 
-        $request = new Request();
-        $request->account_id = '98f13708210194c475687be6106a3b84';
-        $request->amount = 20;
-        $request->currency = 'CLP';
-        $request->reference = 'FAKEORDER1';
-        $request->customer_email = 'jhon@doe.com';
-        $request->url_complete = 'http://doe.com/complete';
-        $request->url_cancel = 'http://doe.com/cancel';
-        $request->url_callback = 'http://doe.com/callback';
-        $request->shop_country = 'CL';
-        $request->session_id = 'avalidsessionid';
+        $request = new Request(
+            '98f13708210194c475687be6106a3b84',
+            2000,
+            'http://doe.com/callback',
+            'http://doe.com/complete',
+            'http://doe.com/cancel',
+            'avalidsessionid',
+            'FAKEORDER1',
+            'jhon@doe.com'
+        );
 
-        $transaction = new Transaction($request);
-        $transaction->setToken($token);
-        $transaction->environment = 'DESARROLLO';
+        $transaction = new Transaction($request, $token);
+        $transaction->setEnviroment(Transaction::PRODUCCION);
 
-        $parsedRequestData = [];
-        foreach ($request as $key => $value) {
-            $parsedRequestData['x_' . $key] = $value;
-        }
+        $this->assertEquals(
+            'https://gw.pagofacil.cl/initTransaction',
+            $transaction->getEnviroment()
+        );
+    }
 
-        $transaction->generarFirma($parsedRequestData);
+    /** @test */
+    public function it_set_the_right_beta_enviroment()
+    {
+        $token = '483fd31ad78d7065e6d506033ca0499a01fbe85653e5c98e9cc4a66234835317';
 
-        $transaction->_initTransaction($parsedRequestData);
+        $request = new Request(
+            '98f13708210194c475687be6106a3b84',
+            2000,
+            'http://doe.com/callback',
+            'http://doe.com/complete',
+            'http://doe.com/cancel',
+            'avalidsessionid',
+            'FAKEORDER1',
+            'jhon@doe.com'
+        );
 
-        $this->expectOutputString($this->getOutputForm($parsedRequestData));
+        $transaction = new Transaction($request, $token);
+        $transaction->setEnviroment(Transaction::BETA);
+
+        $this->assertEquals(
+            'https://gw-beta.pagofacil.cl/initTransaction',
+            $transaction->getEnviroment()
+        );
+    }
+
+    /** @test */
+    public function it_trigger_a_form_when_its_processed()
+    {
+        $token = '483fd31ad78d7065e6d506033ca0499a01fbe85653e5c98e9cc4a66234835317';
+
+        $request = new Request(
+            '98f13708210194c475687be6106a3b84',
+            2000,
+            'http://doe.com/callback',
+            'http://doe.com/complete',
+            'http://doe.com/cancel',
+            'avalidsessionid',
+            'FAKEORDER1',
+            'jhon@doe.com'
+        );
+
+        $transaction = new Transaction($request, $token);
+        $transaction->initTransaction();
+
+        $this->expectOutputString(
+            $this->getOutputForm($request->getParsedData(), $token)
+        );
     }
 
     /**
@@ -147,21 +181,20 @@ class TransactionTest extends TestCase
      * @param array $parsedRequestData
      * @return string
      */
-    public function getOutputForm($parsedRequestData)
+    public function getOutputForm(array $request, $token)
     {
         $html = '';
         $html .= '<html>';
         $html .= '  <head>  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script></head>';
         $html .= '  <body>';
         $html .= '    <form name="requestForm" id="requestForm" action=https://gw-dev.pagofacil.cl/initTransaction method="POST">';
-        foreach ($parsedRequestData as $key => $value) {
+        foreach ($request as $key => $value) {
             $html .= '    <input type="hidden" name="' . $key . '" value="' . $value . '" />';
         }
+        $html .= '      <input type="hidden" name="x_signature" value="' . Transaction::generateSignature($request, $token) . '" />';
         $html .= '    </form>';
         $html .= '    <script type="text/javascript">';
-        $html .= '      $(document).ready(function () {';
-        $html .= '        $("#requestForm").submit(); ';
-        $html .= '      });';
+        $html .= '      document.getElementById("requestForm").submit();';
         $html .= '    </script>';
         $html .= '  </body>';
         $html .= '</html>';
