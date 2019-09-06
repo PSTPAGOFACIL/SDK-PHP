@@ -13,7 +13,6 @@ class Request implements Requestable
     protected $ammount;
     protected $currency = 'CLP';
     protected $reference;
-    protected $signature;
 
     /**
      * Class constructor
@@ -64,7 +63,6 @@ class Request implements Requestable
             'x_amount' => $this->ammount,
             'x_currency' => $this->currency,
             'x_reference' => $this->reference,
-            'x_signature' => $this->signature,
         ];
 
         ksort($parseableData);
