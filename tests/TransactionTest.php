@@ -10,23 +10,23 @@ class TransactionTest extends TestCase
     /** @test */
     public function it_generate_the_right_signature()
     {
-        $token = '483fd31ad78d7065e6d506033ca0499a01fbe85653e5c98e9cc4a66234835317';
-
+        $token = '69454a334e4a6776644245336d4357485661494b334f4d4a5378335738326a31';
         $request = [
-            'x_account_id' => 'a6d26a46b42ee1955ffca9e0d2af1c00cb4a379fa8e1caa2fd900941f72430ea',
-            'x_amount' => '5000.00',
+            'x_account_id' => '4c5a78505555684e6d38374f4572473631745272544b7834554c75397045306c',
+            'x_amount' => '9000',
             'x_currency' => 'CLP',
-            'x_gateway_reference' => '9838',
-            'x_reference' => 'Y13lbj8YnG4GgdQ0REmd',
-            'x_result' => 'completed',
-            'x_test' => 'true',
-            'x_timestamp' => '2019-08-27T15:24:11.092Z',
-            'x_message' => 'X',
-            'x_signature' => 'b1122dbdd6d22dfbdd44986930e1408e5980c837640cad013d8a1cdc216ae268'
+            'x_shop_country' => 'CL',
+            'x_customer_email' => 'me@acme.com',
+            'x_url_callback' => 'http://0125a127.ngrok.io/callback.php',
+            'x_url_cancel' => 'http://0125a127.ngrok.io/cancel.php',
+            'x_url_complete' => 'http://0125a127.ngrok.io/complete.php',
+            'x_reference' => 'mycustomorder-588',
+            'x_session_id' => '20190902032313289',
+            'x_signature' => '8e05b6aa5ee2cf28b727704e310d464750aaddf65924b5318ba76d4390b3ff18',
         ];
 
         $this->assertEquals(
-            'b1122dbdd6d22dfbdd44986930e1408e5980c837640cad013d8a1cdc216ae268',
+            '8e05b6aa5ee2cf28b727704e310d464750aaddf65924b5318ba76d4390b3ff18',
             Transaction::generateSignature($request, $token)
         );
     }
@@ -34,19 +34,20 @@ class TransactionTest extends TestCase
     /** @test */
     public function it_validate_the_right_signature()
     {
-        $token = '483fd31ad78d7065e6d506033ca0499a01fbe85653e5c98e9cc4a66234835317';
+        $token = '69454a334e4a6776644245336d4357485661494b334f4d4a5378335738326a31';
 
         $request = [
-            'x_account_id' => 'a6d26a46b42ee1955ffca9e0d2af1c00cb4a379fa8e1caa2fd900941f72430ea',
-            'x_amount' => '5000.00',
+            'x_account_id' => '4c5a78505555684e6d38374f4572473631745272544b7834554c75397045306c',
+            'x_amount' => '9000',
             'x_currency' => 'CLP',
-            'x_gateway_reference' => '9838',
-            'x_reference' => 'Y13lbj8YnG4GgdQ0REmd',
-            'x_result' => 'completed',
-            'x_test' => 'true',
-            'x_timestamp' => '2019-08-27T15:24:11.092Z',
-            'x_message' => 'X',
-            'x_signature' => 'b1122dbdd6d22dfbdd44986930e1408e5980c837640cad013d8a1cdc216ae268'
+            'x_shop_country' => 'CL',
+            'x_customer_email' => 'me@acme.com',
+            'x_url_callback' => 'http://0125a127.ngrok.io/callback.php',
+            'x_url_cancel' => 'http://0125a127.ngrok.io/cancel.php',
+            'x_url_complete' => 'http://0125a127.ngrok.io/complete.php',
+            'x_reference' => 'mycustomorder-588',
+            'x_session_id' => '20190902032313289',
+            'x_signature' => '8e05b6aa5ee2cf28b727704e310d464750aaddf65924b5318ba76d4390b3ff18',
         ];
 
         $this->assertTrue(
@@ -57,19 +58,20 @@ class TransactionTest extends TestCase
     /** @test */
     public function it_may_not_validate_the_right_signature()
     {
-        $token = '483fd31ad78d7065e6d506033ca0499a01fbe85653e5c98e9cc4a66234835317';
+        $token = '69454a334e4a6776644245336d4357485661494b334f4d4a5378335738326a31';
 
         $request = [
-            'x_account_id' => 'a6d26a46b42ee1955ffca9e0d2af1c00cb4a379fa8e1caa2fd900941f72430ea',
-            'x_amount' => '5000.00',
+            'x_account_id' => '4c5a78505555684e6d38374f4572473631745272544b7834554c75397045306c',
+            'x_amount' => '9000',
             'x_currency' => 'CLP',
-            'x_gateway_reference' => '9838',
-            'x_reference' => 'Y13lbj8YnG4GgdQ0REmd',
-            'x_result' => 'completed',
-            'x_test' => 'true',
-            'x_timestamp' => '2019-08-27T15:24:11.092Z',
-            'x_message' => 'X',
-            'x_signature' => 'notavalidsignature'
+            'x_shop_country' => 'CL',
+            'x_customer_email' => 'me@acme.com',
+            'x_url_callback' => 'http://0125a127.ngrok.io/callback.php',
+            'x_url_cancel' => 'http://0125a127.ngrok.io/cancel.php',
+            'x_url_complete' => 'http://0125a127.ngrok.io/complete.php',
+            'x_reference' => 'mycustomorder-588',
+            'x_session_id' => '20190902032313289',
+            'x_signature' => 'notavalidsignature',
         ];
 
         $this->assertFalse(

@@ -65,6 +65,8 @@ class Transaction
             unset($request['x_signature']);
         }
 
+        ksort($request);
+
         $message = '';
 
         foreach ($request as $key => $value) {
