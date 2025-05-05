@@ -8,10 +8,19 @@
             "email": "stephanie@pagofacil.cl"
         }
     ],
-    "require": {},
+    "require": {
+        "phpunit/phpunit": "~7.0"
+    },
     "autoload": {
-        "psr-4": {"PagoFacil\\lib\\": "classes"}
+        "psr-4": {
+            "PagoFacil\\lib\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
     },
     "minimum-stability": "dev",
-    "version": "0.1"
+    "version": "0.2"
 }
